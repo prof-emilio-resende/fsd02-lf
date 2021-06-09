@@ -1,14 +1,17 @@
 package br.edu.impacta.async;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Async {
-    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
     private static List<String> names = List.of("words", "of", "the", "list");
 
     public static void runAsync() {
@@ -36,19 +39,28 @@ public class Async {
     }
 
     public static Future<List<String>> getDataAsync() {
+
         return executor.submit(() -> {
+            System.out.println("before");
+            System.out.println(LocalDateTime.now());
             for (String name : names) {
-                System.out.printf("fake wait for %s...%n", name);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                executor.submit(() -> {
+                    System.out.printf("fake wait for %s...%n", name);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return name;
+                });
             }
+            System.out.println(LocalDateTime.now());
+            System.out.println("after");
 
             return names;
         });
     }
+
     public static void runSync() {
         var localDate = LocalDateTime.now();
         System.out.println("starting sync...");
@@ -79,5 +91,6 @@ public class Async {
 
         runSync();
         runAsync();
+        executor.shutdown();
     }
 }
