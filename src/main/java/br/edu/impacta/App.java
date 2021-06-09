@@ -1,8 +1,10 @@
 package br.edu.impacta;
 
+import br.edu.impacta.async.Async;
 import br.edu.impacta.collections.Collections;
 import br.edu.impacta.dynamics.Dynamics;
 import br.edu.impacta.functional.Functions;
+import br.edu.impacta.functional.Streams;
 import br.edu.impacta.objects.Objects;
 
 /**
@@ -26,5 +28,9 @@ public class App
         Objects.playOO();
 
         Functions.playFunctional();
+
+        Streams.playStreams();
+
+        Async.playAsync();
     }
 }
